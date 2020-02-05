@@ -96,17 +96,36 @@ def getOffset(message):
 
 offset = getOffset("Enter the offset in seconds: ")
 
-rawfile = open(sys.argv[1], "r")
-subfile = open(sys.argv[2], "w")
+
+try:
+    rawfile = open(sys.argv[1], "r")
+except IndexError:
+    print("Subtitle file hasn't been supplied, terminating...")
+    sys.exit()
+except FileNotFoundError:
+    print("Subtitle file doesn't exist, terminating...")
+    sys.exit()
 
 if '.srt' in sys.argv[1]:
+    extension = '.srt'
+    try:
+        subfile = open(sys.argv[2], "w")
+    except IndexError:
+        subfile = open("a" + extension, "w")
     srt = Srt()
     srt.moveSubtitles(rawfile, subfile)
 elif '.ass' in sys.argv[1]:
+    extension = '.ass'
+    try:
+        subfile = open(sys.argv[2], "w")
+    except IndexError:
+        subfile = open("a" + extension, "w")
     ass = Ass()
     ass.moveSubtitles(rawfile, subfile)
 else:
     print("Subtitles are not in supported format, terminating...")
+    rawfile.close()
+    subfile.close()
         
             
     
